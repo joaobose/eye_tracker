@@ -1,6 +1,6 @@
 #import evdev
 from evdev import InputDevice, categorize, ecodes
-from mapping import * 
+from mapping import *
 
 #creates object 'gamepad' to store the data
 #you can call it whatever you like

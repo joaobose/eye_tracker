@@ -136,7 +136,7 @@ def map_dpad(event):
             if event.val == -1:
                 return DPAD_L
             if event.val == 1:
-                pass DPAD_R
+                return DPAD_R
             else:
                 return DPAD_CENTER
 
