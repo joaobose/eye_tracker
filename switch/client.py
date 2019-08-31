@@ -8,10 +8,7 @@ import time
 import math
 from mapping import *
 
-# parser = argparse.ArgumentParser('Client for sending controller commands to a controller emulator')
-# parser.add_argument('port')
-# args = parser.parse_args()
-_port = '/dev/ttyUSB0'
+ser = None
 
 # Compute x and y based on angle and intensity
 def angle(angle, intensity):
@@ -312,28 +309,28 @@ def sync():
             inSync = send_packet()
     return inSync
 
-# -------------------------------------------------------------------------
+def connect(port):
+    global ser
 
-ser = serial.Serial(port=_port, baudrate=19200,timeout=1)
-# ser = serial.Serial(port=args.port, baudrate=19200,timeout=1)
-# ser = serial.Serial(port=args.port, baudrate=31250,timeout=1)
-# ser = serial.Serial(port=args.port, baudrate=40000,timeout=1)
-# ser = serial.Serial(port=args.port, baudrate=62500,timeout=1)
+    ser = serial.Serial(port=port, baudrate=19200,timeout=1)
+    # ser = serial.Serial(port=args.port, baudrate=19200,timeout=1)
+    # ser = serial.Serial(port=args.port, baudrate=31250,timeout=1)
+    # ser = serial.Serial(port=args.port, baudrate=40000,timeout=1)
+    # ser = serial.Serial(port=args.port, baudrate=62500,timeout=1)
 
-# Attempt to sync with the MCU
-if not sync():
-    print('Could not sync!')
+    # Attempt to sync with the MCU
+    if not sync():
+        print('Could not sync!')
+        return False
 
-if not send_cmd(BTN_A + DPAD_U_R + LSTICK_U + RSTICK_D_L):
-    print('Packet Error!')
+    if not send_cmd(BTN_A + DPAD_U_R + LSTICK_U + RSTICK_D_L):
+        print('Packet Error!')
+        return False
 
-p_wait(0.05)
+    p_wait(0.05)
 
-if not send_cmd():
-    print('Packet Error!')
+    if not send_cmd():
+        print('Packet Error!')
+        return False
 
-
-# testbench()
-# testbench_packet_speed(1000)
-
-ser.close()
+    return True

@@ -1,5 +1,63 @@
 import math
 
+'''
+    Botones:
+        Todos son type 1
+
+        Release: val 0
+        Press: val 1
+        Hold: val 2
+
+        B: code 304
+        A: code 305
+        Y: code 306
+        X: code 307
+
+        L: 308
+        R: 309
+        ZL: 310
+        ZR: 311
+
+        -: code 312
+        +: code 313
+        Bump left: code 314
+        Bump right: code 315
+        home: code 316
+        capture: code 317
+
+
+    Evento nada:
+        code 00, type 00, val 00
+
+    Evento random:
+        code 04, type 04, val random ???
+
+    joystick y flechas son type3
+
+    Joystick Izquierdo:
+    	code 0 horizontal:
+    		minimo: 5200 izquierdo
+    		max:	55000 derecho
+    	code 1 vertical:
+    		minimo: 8600 arriba
+    		max: 59000 abajo
+
+    Joystick derecho:
+    	code 3 horizontal:
+    		minimo: 7000 izquierdo
+    		max: 55000 derecha
+    	code 4 vertical
+    		minimo: 6500 arriba
+    		max: 57000 abajo
+
+    Flechas:
+        val 0 centro para todos
+        izquierda code 16 val -1
+        derecho code 16 val 1
+        arriba code 17 val -1
+        abajo code 17 val 1
+'''
+
 STATE_OUT_OF_SYNC   = 0
 STATE_SYNC_START    = 1
 STATE_SYNC_1        = 2
@@ -91,11 +149,16 @@ RESP_SYNC_1        = 0xCC
 RESP_SYNC_OK       = 0x33
 
 # axis conversion constants
-R_AXIS_Y_CONVER = 24425 / 31075
+R_AXIS_Y_CONVER = 31075 / 24425
 R_AXIS_X_CONVER = 31500 / 23500
 L_AXIS_X_CONVER = 30100 / 24900
-L_AXIS_Y_CONVER = 24950 / 33850
+L_AXIS_Y_CONVER = 33850 / 24950
 
+# axis center
+R_AXIS_Y_CENTER = 31075
+R_AXIS_X_CENTER = 31500
+L_AXIS_X_CENTER = 30100
+L_AXIS_Y_CENTER = 33850
 
 def map_button(event):
     if event.type in [1,2]:
@@ -132,62 +195,77 @@ def map_button(event):
 
 def map_dpad(event):
     if event.type == 3:
+        print(event)
         if event.code == 16:
-            if event.val == -1:
+            if event.value == -1:
                 return DPAD_L
-            if event.val == 1:
+            if event.value == 1:
                 return DPAD_R
             else:
                 return DPAD_CENTER
 
         if event.code == 17:
-            if event.val == -1:
+            if event.value == -1:
                 return DPAD_U
-            if event.val == 1:
+            if event.value == 1:
                 return DPAD_D
             else:
                 return DPAD_CENTER
-    else:
-        return BTN_NONE
 
-def get_lx_axis(event):
-    if event.code == 0:
-        return event.val
-    else:
-        return LSTICK_CENTER
+    return DPAD_CENTER
 
-def get_ly_axis(event):
-    if event.code == 1:
-        return event.val
+def get_lx_axis(event,lx):
+    if event.code == 0 and event.type == 3:
+        return event.value
     else:
-        return LSTICK_CENTER
+        return lx
 
-def get_rx_axis(event):
-    if event.code == 3:
-        return event.val
+def get_ly_axis(event,ly):
+    if event.code == 1 and event.type == 3:
+        return event.value
     else:
-        return RSTICK_CENTER
+        return ly
 
-def get_ry_axis(event):
-    if event.code == 4:
-        return event.val
+def get_rx_axis(event,rx):
+    if event.code == 3 and event.type == 3:
+        return event.value
     else:
-        return RSTICK_CENTER
+        return rx
 
-def map_l_axis(x, y):
+def get_ry_axis(event,ry):
+    if event.code == 4 and event.type == 3:
+        return event.value
+    else:
+        return ry
+
+def map_l_axis(_x, _y):
     x = (_x / 24900) - L_AXIS_X_CONVER
-    y = -(_y / 33850) + L_AXIS_Y_CONVER
+    y = -(_y / 24950) + L_AXIS_Y_CONVER
 
     intensity = math.hypot(x, y)
-    angle = (math.atan2(y, x) * 180 / math.pi) + 360
+    angle = (math.atan2(y, x) * 180 / math.pi)
+    if angle < 0:
+        angle += 360
+
+    if intensity < 0.1:
+        intensity = 0
+
+    intensity = min(intensity, 1)
 
     return intensity, angle
 
 def map_r_axis(_x, _y):
     x = (_x / 23500) - R_AXIS_X_CONVER
-    y = -(_y / 31075) + R_AXIS_Y_CONVER
+    y = -(_y / 24425) + R_AXIS_Y_CONVER
 
     intensity = math.hypot(x, y)
-    angle = (math.atan2(y, x) * 180 / math.pi) + 360
+    angle = (math.atan2(y, x) * 180 / math.pi)
+    if angle < 0:
+        angle += 360
+
+    if intensity < 0.1:
+        intensity = 0
+
+    intensity = min(intensity, 1)
 
     return intensity, angle
