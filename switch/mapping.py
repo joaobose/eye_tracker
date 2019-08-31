@@ -87,3 +87,21 @@ RESP_UPDATE_NACK   = 0x92
 RESP_SYNC_START    = 0xFF
 RESP_SYNC_1        = 0xCC
 RESP_SYNC_OK       = 0x33
+
+def map_button(event):
+    if event.code == 310:
+        return BTN_ZL
+    if event.code == 311:
+        return BTN_ZR
+    if event.code == 312:
+        return BTN_MINUS
+    if event.code == 313:
+        return BTN_PLUS
+    if event.code == 314:
+        return BTN_LCLICK
+    if event.code == 315:
+        return BTN_RCLICK
+    if event.code == 316:
+        return BTN_HOME
+    if event.code == 317:
+        return BTN_CAPTURE
