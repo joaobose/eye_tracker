@@ -1,3 +1,5 @@
+import math
+
 STATE_OUT_OF_SYNC   = 0
 STATE_SYNC_START    = 1
 STATE_SYNC_1        = 2
@@ -88,20 +90,104 @@ RESP_SYNC_START    = 0xFF
 RESP_SYNC_1        = 0xCC
 RESP_SYNC_OK       = 0x33
 
+# axis conversion constants
+R_AXIS_Y_CONVER = 24425 / 31075
+R_AXIS_X_CONVER = 31500 / 23500
+L_AXIS_X_CONVER = 30100 / 24900
+L_AXIS_Y_CONVER = 24950 / 33850
+
+
 def map_button(event):
-    if event.code == 310:
-        return BTN_ZL
-    if event.code == 311:
-        return BTN_ZR
-    if event.code == 312:
-        return BTN_MINUS
-    if event.code == 313:
-        return BTN_PLUS
-    if event.code == 314:
-        return BTN_LCLICK
-    if event.code == 315:
-        return BTN_RCLICK
-    if event.code == 316:
-        return BTN_HOME
-    if event.code == 317:
-        return BTN_CAPTURE
+    if event.type in [1,2]:
+        if event.code == 304:
+            return BTN_B
+        if event.code == 305:
+            return BTN_A
+        if event.code == 306:
+            return BTN_Y
+        if event.code == 307:
+            return BTN_X
+        if event.code == 308:
+            return BTN_L
+        if event.code == 309:
+            return BTN_R
+        if event.code == 310:
+            return BTN_ZL
+        if event.code == 311:
+            return BTN_ZR
+        if event.code == 312:
+            return BTN_MINUS
+        if event.code == 313:
+            return BTN_PLUS
+        if event.code == 314:
+            return BTN_LCLICK
+        if event.code == 315:
+            return BTN_RCLICK
+        if event.code == 316:
+            return BTN_HOME
+        if event.code == 317:
+            return BTN_CAPTURE
+    else:
+        return BTN_NONE
+
+def map_dpad(event):
+    if event.type == 3:
+        if event.code == 16:
+            if event.val == -1:
+                return DPAD_L
+            if event.val == 1:
+                pass DPAD_R
+            else:
+                return DPAD_CENTER
+
+        if event.code == 17:
+            if event.val == -1:
+                return DPAD_U
+            if event.val == 1:
+                return DPAD_D
+            else:
+                return DPAD_CENTER
+    else:
+        return BTN_NONE
+
+def get_lx_axis(event):
+    if event.code == 0:
+        return event.val
+    else:
+        return LSTICK_CENTER
+
+def get_ly_axis(event):
+    if event.code == 1:
+        return event.val
+    else:
+        return LSTICK_CENTER
+
+def get_rx_axis(event):
+    if event.code == 3:
+        return event.val
+    else:
+        return RSTICK_CENTER
+
+def get_ry_axis(event):
+    if event.code == 4:
+        return event.val
+    else:
+        return RSTICK_CENTER
+
+def map_l_axis(x, y):
+    x = (_x / 24900) - L_AXIS_X_CONVER
+    y = -(_y / 33850) + L_AXIS_Y_CONVER
+
+    intensity = math.hypot(x, y)
+    angle = (math.atan2(y, x) * 180 / math.pi) + 360
+
+    return intensity, angle
+
+def map_r_axis(_x, _y):
+    x = (_x / 23500) - R_AXIS_X_CONVER
+    y = -(_y / 31075) + R_AXIS_Y_CONVER
+
+    intensity = math.hypot(x, y)
+    angle = (math.atan2(y, x) * 180 / math.pi) + 360
+
+    return intensity, angle
