@@ -4,7 +4,7 @@ from mapping import *
 from client import *
 import time
 
-gamepad = InputDevice('/dev/input/event17')
+gamepad = InputDevice('/dev/input/event4')
 port = '/dev/ttyUSB0'
 
 #prints out device info at start
@@ -12,8 +12,9 @@ print(gamepad)
 
 while not connect(port):
     print('Retrying')
-    time.sleep(0.5)
+    time.sleep(0.01)
 
+print('Connected')
 rx = R_AXIS_X_CENTER
 ry = R_AXIS_Y_CENTER
 lx = L_AXIS_X_CENTER
@@ -28,9 +29,10 @@ while True:
     while True:
         time.sleep(0.001)
         event = gamepad.read_one()
+
         if event == None:
             break
-
+            
         button = map_button(event)
         dpad = map_dpad(event)
 
@@ -43,14 +45,18 @@ while True:
 
         # dpad release
         if event.value == 0:
+            # horizontal dpad
             if event.code == 16:
                 buffer -= last_dpad_h
+            # vertical dpad
             elif event.code == 17:
                 buffer -= last_dpad_v
         # dpad press
         else:
+            # horizontal dpad
             if event.code == 16:
                 last_dpad_h = dpad
+            # vertical dpad
             elif event.code == 17:
                 last_dpad_v = dpad
             buffer += dpad
