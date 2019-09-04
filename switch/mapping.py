@@ -1,63 +1,5 @@
 import math
 
-'''
-    Botones:
-        Todos son type 1
-
-        Release: val 0
-        Press: val 1
-        Hold: val 2
-
-        B: code 304
-        A: code 305
-        Y: code 306
-        X: code 307
-
-        L: 308
-        R: 309
-        ZL: 310
-        ZR: 311
-
-        -: code 312
-        +: code 313
-        Bump left: code 314
-        Bump right: code 315
-        home: code 316
-        capture: code 317
-
-
-    Evento nada:
-        code 00, type 00, val 00
-
-    Evento random:
-        code 04, type 04, val random ???
-
-    joystick y flechas son type3
-
-    Joystick Izquierdo:
-    	code 0 horizontal:
-    		minimo: 5200 izquierdo
-    		max:	55000 derecho
-    	code 1 vertical:
-    		minimo: 8600 arriba
-    		max: 59000 abajo
-
-    Joystick derecho:
-    	code 3 horizontal:
-    		minimo: 7000 izquierdo
-    		max: 55000 derecha
-    	code 4 vertical
-    		minimo: 6500 arriba
-    		max: 57000 abajo
-
-    Flechas:
-        val 0 centro para todos
-        izquierda code 16 val -1
-        derecho code 16 val 1
-        arriba code 17 val -1
-        abajo code 17 val 1
-'''
-
 STATE_OUT_OF_SYNC   = 0
 STATE_SYNC_START    = 1
 STATE_SYNC_1        = 2
@@ -148,124 +90,357 @@ RESP_SYNC_START    = 0xFF
 RESP_SYNC_1        = 0xCC
 RESP_SYNC_OK       = 0x33
 
-# axis conversion constants
-R_AXIS_Y_CONVER = 31075 / 24425
-R_AXIS_X_CONVER = 31500 / 23500
-L_AXIS_X_CONVER = 30100 / 24900
-L_AXIS_Y_CONVER = 33850 / 24950
 
-# axis center
-R_AXIS_Y_CENTER = 31075
-R_AXIS_X_CENTER = 31500
-L_AXIS_X_CENTER = 30100
-L_AXIS_Y_CENTER = 33850
+class SwitchControllerMapping():
+    '''
+        Botones:
+            Todos son type 1
 
-def map_button(event):
-    if event.type in [1,2]:
-        if event.code == 304:
-            return BTN_B
-        if event.code == 305:
-            return BTN_A
-        if event.code == 306:
-            return BTN_Y
-        if event.code == 307:
-            return BTN_X
-        if event.code == 308:
-            return BTN_L
-        if event.code == 309:
-            return BTN_R
-        if event.code == 310:
-            return BTN_ZL
-        if event.code == 311:
-            return BTN_ZR
-        if event.code == 312:
-            return BTN_MINUS
-        if event.code == 313:
-            return BTN_PLUS
-        if event.code == 314:
-            return BTN_LCLICK
-        if event.code == 315:
-            return BTN_RCLICK
-        if event.code == 316:
-            return BTN_HOME
-        if event.code == 317:
-            return BTN_CAPTURE
-    else:
-        return BTN_NONE
+            Release: val 0
+            Press: val 1
+            Hold: val 2
 
-def map_dpad(event):
-    if event.type == 3:
-        print(event)
-        if event.code == 16:
-            if event.value == -1:
-                return DPAD_L
-            if event.value == 1:
-                return DPAD_R
+            B: code 304
+            A: code 305
+            Y: code 306
+            X: code 307
+
+            L: 308
+            R: 309
+            ZL: 310
+            ZR: 311
+
+            -: code 312
+            +: code 313
+            Bump left: code 314
+            Bump right: code 315
+            home: code 316
+            capture: code 317
+
+
+        Evento nada:
+            code 00, type 00, val 00
+
+        Evento random:
+            code 04, type 04, val random ???
+
+        joystick y flechas son type3
+
+        Joystick Izquierdo:
+        	code 0 horizontal:
+        		minimo: 5200 izquierdo
+        		max:	55000 derecho
+        	code 1 vertical:
+        		minimo: 8600 arriba
+        		max: 59000 abajo
+
+        Joystick derecho:
+        	code 3 horizontal:
+        		minimo: 7000 izquierdo
+        		max: 55000 derecha
+        	code 4 vertical
+        		minimo: 6500 arriba
+        		max: 57000 abajo
+
+        Flechas:
+            val 0 centro para todos
+            izquierda code 16 val -1
+            derecho code 16 val 1
+            arriba code 17 val -1
+            abajo code 17 val 1
+    '''
+
+    # axis conversion constants
+    R_AXIS_Y_CONVER = 31075 / 24425
+    R_AXIS_X_CONVER = 31500 / 23500
+    L_AXIS_X_CONVER = 30100 / 24900
+    L_AXIS_Y_CONVER = 33850 / 24950
+
+    # axis center
+    R_AXIS_Y_CENTER = 31075
+    R_AXIS_X_CENTER = 31500
+    L_AXIS_X_CENTER = 30100
+    L_AXIS_Y_CENTER = 33850
+
+    def map_button(self,event):
+        if event.type in [1,2]:
+            if event.code == 304:
+                return BTN_B
+            if event.code == 305:
+                return BTN_A
+            if event.code == 306:
+                return BTN_Y
+            if event.code == 307:
+                return BTN_X
+            if event.code == 308:
+                return BTN_L
+            if event.code == 309:
+                return BTN_R
+            if event.code == 310:
+                return BTN_ZL
+            if event.code == 311:
+                return BTN_ZR
+            if event.code == 312:
+                return BTN_MINUS
+            if event.code == 313:
+                return BTN_PLUS
+            if event.code == 314:
+                return BTN_LCLICK
+            if event.code == 315:
+                return BTN_RCLICK
+            if event.code == 316:
+                return BTN_HOME
+            if event.code == 317:
+                return BTN_CAPTURE
+        else:
+            return BTN_NONE
+
+    def map_dpad(self,event):
+        if event.type == 3:
+            if event.code == 16:
+                if event.value == -1:
+                    return DPAD_L
+                if event.value == 1:
+                    return DPAD_R
+                else:
+                    return DPAD_CENTER
+
+            if event.code == 17:
+                if event.value == -1:
+                    return DPAD_U
+                if event.value == 1:
+                    return DPAD_D
+                else:
+                    return DPAD_CENTER
+
+        return DPAD_CENTER
+
+    def get_lx_axis(self,event,lx):
+        if event.code == 0 and event.type == 3:
+            return event.value
+        else:
+            return lx
+
+    def get_ly_axis(self,event,ly):
+        if event.code == 1 and event.type == 3:
+            return event.value
+        else:
+            return ly
+
+    def get_rx_axis(self,event,rx):
+        if event.code == 3 and event.type == 3:
+            return event.value
+        else:
+            return rx
+
+    def get_ry_axis(self,event,ry):
+        if event.code == 4 and event.type == 3:
+            return event.value
+        else:
+            return ry
+
+    def map_l_axis(self,_x, _y):
+        x = (_x / 24900) - self.L_AXIS_X_CONVER
+        y = -(_y / 24950) + self.L_AXIS_Y_CONVER
+
+        intensity = math.hypot(x, y)
+        angle = (math.atan2(y, x) * 180 / math.pi)
+        if angle < 0:
+            angle += 360
+
+        if intensity < 0.1:
+            intensity = 0
+
+        intensity = min(intensity, 1)
+
+        return intensity, angle
+
+    def map_r_axis(self,_x, _y):
+        x = (_x / 23500) - self.R_AXIS_X_CONVER
+        y = -(_y / 24425) + self.R_AXIS_Y_CONVER
+
+        intensity = math.hypot(x, y)
+        angle = (math.atan2(y, x) * 180 / math.pi)
+        if angle < 0:
+            angle += 360
+
+        if intensity < 0.1:
+            intensity = 0
+
+        intensity = min(intensity, 1)
+
+        return intensity, angle
+
+class PS4ControllerMapping():
+    '''
+        Botones:
+            Todos son type 1
+
+            Release: val 0
+            Press: val 1
+            Hold: DOESN'T EXIST !
+
+            B: code 304
+            A: code 305
+            Y: code 308 !
+            X: code 307
+
+            L: 310 !
+            R: 311 !
+            ZL: 312 !
+            ZR: 313 !
+
+            -: code 314 !
+            +: code 315 !
+            Bump left: code 317 !
+            Bump right: code 318 !
+            home: code 316
+            capture: DOESN'T EXIST !
+
+
+        Evento nada:
+            code 00, type 00, val 00
+
+        Evento random:
+            code 04, type 04, val random ???
+
+        joystick y flechas son type3
+
+        Joystick Izquierdo:!
+        	code 0 horizontal:
+        		minimo: 0 izquierdo !
+        		max:	255 derecho !
+        	code 1 vertical:
+        		minimo: 0 arriba !
+        		max: 255 abajo !
+
+        Joystick derecho:!
+        	code 3 horizontal:
+        		minimo: 0 izquierdo !
+        		max: 255 derecha !
+        	code 4 vertical
+        		minimo: 0 arriba !
+        		max: 255 abajo !
+
+        Flechas:
+            val 0 centro para todos
+            izquierda code 16 val -1
+            derecho code 16 val 1
+            arriba code 17 val -1
+            abajo code 17 val 1
+    '''
+
+    # axis center
+    R_AXIS_Y_CENTER = 127
+    R_AXIS_X_CENTER = 127
+    L_AXIS_X_CENTER = 127
+    L_AXIS_Y_CENTER = 127
+
+    def map_button(self,event):
+        if event.type in [1,2]:
+            if event.code == 304:
+                return BTN_B
+            if event.code == 305:
+                return BTN_A
+            if event.code == 308:
+                return BTN_Y
+            if event.code == 307:
+                return BTN_X
+            if event.code == 310:
+                return BTN_L
+            if event.code == 311:
+                return BTN_R
+            if event.code == 312:
+                return BTN_ZL
+            if event.code == 313:
+                return BTN_ZR
+            if event.code == 314:
+                return BTN_MINUS
+            if event.code == 315:
+                return BTN_PLUS
+            if event.code == 317:
+                return BTN_LCLICK
+            if event.code == 318:
+                return BTN_RCLICK
+            if event.code == 316:
+                return BTN_HOME
             else:
-                return DPAD_CENTER
+                return BTN_NONE
+        else:
+            return BTN_NONE
 
-        if event.code == 17:
-            if event.value == -1:
-                return DPAD_U
-            if event.value == 1:
-                return DPAD_D
-            else:
-                return DPAD_CENTER
+    def map_dpad(self,event):
+        if event.type == 3:
+            if event.code == 16:
+                if event.value == -1:
+                    return DPAD_L
+                if event.value == 1:
+                    return DPAD_R
+                else:
+                    return DPAD_CENTER
 
-    return DPAD_CENTER
+            if event.code == 17:
+                if event.value == -1:
+                    return DPAD_U
+                if event.value == 1:
+                    return DPAD_D
+                else:
+                    return DPAD_CENTER
 
-def get_lx_axis(event,lx):
-    if event.code == 0 and event.type == 3:
-        return event.value
-    else:
-        return lx
+        return DPAD_CENTER
 
-def get_ly_axis(event,ly):
-    if event.code == 1 and event.type == 3:
-        return event.value
-    else:
-        return ly
+    def get_lx_axis(self,event,lx):
+        if event.code == 0 and event.type == 3:
+            return event.value
+        else:
+            return lx
 
-def get_rx_axis(event,rx):
-    if event.code == 3 and event.type == 3:
-        return event.value
-    else:
-        return rx
+    def get_ly_axis(self,event,ly):
+        if event.code == 1 and event.type == 3:
+            return event.value
+        else:
+            return ly
 
-def get_ry_axis(event,ry):
-    if event.code == 4 and event.type == 3:
-        return event.value
-    else:
-        return ry
+    def get_rx_axis(self,event,rx):
+        if event.code == 3 and event.type == 3:
+            return event.value
+        else:
+            return rx
 
-def map_l_axis(_x, _y):
-    x = (_x / 24900) - L_AXIS_X_CONVER
-    y = -(_y / 24950) + L_AXIS_Y_CONVER
+    def get_ry_axis(self,event,ry):
+        if event.code == 4 and event.type == 3:
+            return event.value
+        else:
+            return ry
 
-    intensity = math.hypot(x, y)
-    angle = (math.atan2(y, x) * 180 / math.pi)
-    if angle < 0:
-        angle += 360
+    def map_l_axis(self,_x, _y):
+        x = (2 * _x / 255) - 1
+        y = -(2 * _y / 255) + 1
 
-    if intensity < 0.1:
-        intensity = 0
+        intensity = math.hypot(x, y)
+        angle = (math.atan2(y, x) * 180 / math.pi)
+        if angle < 0:
+            angle += 360
 
-    intensity = min(intensity, 1)
+        if intensity < 0.1:
+            intensity = 0
 
-    return intensity, angle
+        intensity = min(intensity, 1)
 
-def map_r_axis(_x, _y):
-    x = (_x / 23500) - R_AXIS_X_CONVER
-    y = -(_y / 24425) + R_AXIS_Y_CONVER
+        return intensity, angle
 
-    intensity = math.hypot(x, y)
-    angle = (math.atan2(y, x) * 180 / math.pi)
-    if angle < 0:
-        angle += 360
+    def map_r_axis(self,_x, _y):
+        x = (2 * _x / 255) - 1
+        y = -(2 * _y / 255) + 1
 
-    if intensity < 0.1:
-        intensity = 0
+        intensity = math.hypot(x, y)
+        angle = (math.atan2(y, x) * 180 / math.pi)
+        if angle < 0:
+            angle += 360
 
-    intensity = min(intensity, 1)
+        if intensity < 0.1:
+            intensity = 0
 
-    return intensity, angle
+        intensity = min(intensity, 1)
+
+        return intensity, angle

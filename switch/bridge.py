@@ -4,8 +4,10 @@ from mapping import *
 from client import *
 import time
 
-gamepad = InputDevice('/dev/input/event4')
+gamepad = InputDevice('/dev/input/event19')
 port = '/dev/ttyUSB0'
+mapping = PS4ControllerMapping()
+# mapping = SwitchControllerMapping()
 
 #prints out device info at start
 print(gamepad)
@@ -15,10 +17,10 @@ while not connect(port):
     time.sleep(0.01)
 
 print('Connected')
-rx = R_AXIS_X_CENTER
-ry = R_AXIS_Y_CENTER
-lx = L_AXIS_X_CENTER
-ly = L_AXIS_Y_CENTER
+rx = mapping.R_AXIS_X_CENTER
+ry = mapping.R_AXIS_Y_CENTER
+lx = mapping.L_AXIS_X_CENTER
+ly = mapping.L_AXIS_Y_CENTER
 
 last_dpad_h = 0
 last_dpad_v = 0
@@ -29,12 +31,13 @@ while True:
     while True:
         time.sleep(0.001)
         event = gamepad.read_one()
+        # print(event)
 
         if event == None:
             break
-            
-        button = map_button(event)
-        dpad = map_dpad(event)
+
+        button = mapping.map_button(event)
+        dpad = mapping.map_dpad(event)
 
         # button release
         if event.value == 0:
@@ -61,13 +64,13 @@ while True:
                 last_dpad_v = dpad
             buffer += dpad
 
-        rx = get_rx_axis(event,rx)
-        ry = get_ry_axis(event,ry)
-        lx = get_lx_axis(event,lx)
-        ly = get_ly_axis(event,ly)
+        rx = mapping.get_rx_axis(event,rx)
+        ry = mapping.get_ry_axis(event,ry)
+        lx = mapping.get_lx_axis(event,lx)
+        ly = mapping.get_ly_axis(event,ly)
 
-    intensity_r, angle_r = map_r_axis(rx,ry)
-    intensity_l, angle_l = map_l_axis(lx,ly)
+    intensity_r, angle_r = mapping.map_r_axis(rx,ry)
+    intensity_l, angle_l = mapping.map_l_axis(lx,ly)
     cmd_r = rstick_angle(int(angle_r), int(intensity_r * 255))
     cmd_l = lstick_angle(int(angle_l), int(intensity_l * 255))
 
