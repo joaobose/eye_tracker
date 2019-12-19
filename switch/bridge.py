@@ -4,7 +4,7 @@ from mapping import *
 from client import *
 import time
 
-gamepad = InputDevice('/dev/input/event19')
+gamepad = InputDevice('/dev/input/event18')
 port = '/dev/ttyUSB0'
 mapping = PS4ControllerMapping()
 # mapping = SwitchControllerMapping()
@@ -31,7 +31,7 @@ while True:
     while True:
         time.sleep(0.001)
         event = gamepad.read_one()
-        # print(event)
+        print(event)
 
         if event == None:
             break
